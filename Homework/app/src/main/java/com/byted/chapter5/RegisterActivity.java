@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,10 +45,32 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 if (!TextUtils.equals(password, repassword)) {
                     Toast.makeText(RegisterActivity.this, "密码不相等", Toast.LENGTH_SHORT).show();
+
+                    Log.d("homework", "??");
                     return;
                 }
                 // todo 做网络请求
+                apiService.register(name, password, repassword).enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        Log.d("homework", "success");
+                        if (response.body() != null) {//14.56
+                            if (response.body().errorCode == -1) {
+                                Toast.makeText(RegisterActivity.this, "注册失败:" + response.body().errorCode, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "注册成功:" + response.body().user.id, Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "奇怪的错误", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        Log.d("homework", "failed"+t);
+                        Toast.makeText(RegisterActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });
