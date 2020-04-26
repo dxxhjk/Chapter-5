@@ -17,7 +17,7 @@ public interface ApiService {
     //	username,password,repassword
     @FormUrlEncoded
     @POST("user/register")
-    Call<UserResponse> register(@Field("name") String userName,
+    Call<UserResponse> register(@Field("name") String username,
                                 @Field("password") String password,
                                 @Field("repassword") String repassword);
 }
